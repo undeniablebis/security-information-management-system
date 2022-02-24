@@ -7,6 +7,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import co.adet.sims.ui.securityguards.SecurityManagementPanel;
+
 /**
  * Main Frame of the Application. Every interaction possible for
  * this data-entry system is made in here.
@@ -69,9 +71,9 @@ public class MainFrame extends JFrame {
 	
 	/**
 	 * Security Guard Panel 
-	
-	protected oop.elbisri.pupsims.ui.securityguard.ManagementPanel securityGuardManagementPanel; 
-	 */
+	*/
+	protected co.adet.sims.ui.securityguards.SecurityManagementPanel securityGuardManagementPanel; 
+	 
 	/**
 	 * Incident Report Panel 
 	 
@@ -134,8 +136,7 @@ public class MainFrame extends JFrame {
 		inspectionManagementPanel = new oop.elbisri.pupsims.ui.inspection.ManagementPanel();
 		// Create the Parking Slot Management Panel
 		parkingManagementPanel = new oop.elbisri.pupsims.ui.parking.ManagementPanel();
-		// Create the Security Guard Management Panel 
-		securityGuardManagementPanel = new oop.elbisri.pupsims.ui.securityguard.ManagementPanel(); 
+		
 		// Create the Incident Report Management Panel 
 		incidentManagementPanel = new oop.elbisri.pupsims.ui.incidentreport.ManagementPanel();
 		// Create the Inventory of Supplies Management Panel
@@ -143,6 +144,8 @@ public class MainFrame extends JFrame {
 		visitorManagementPanel = new oop.elbisri.pupsims.ui.visitor.ManagementPanel();
 		carManagementPanel = new oop.elbisri.pupsims.ui.car.ManagementPanel();
 		*/
+		// Create the Security Guard Management Panel 
+		securityGuardManagementPanel = new co.adet.sims.ui.securityguards.SecurityManagementPanel(); 
 	}
 	
 	/**
@@ -295,6 +298,7 @@ public class MainFrame extends JFrame {
 	
 	/**
 	 * Show the security guard management panel. 
+	 */
 	
 	public void showSecurityGuardManagementPanel() {
 		// Iff the current shown panel is the security guard management panel, do nothing
@@ -316,7 +320,7 @@ public class MainFrame extends JFrame {
 		revalidate();
 		repaint();
 	}
-	 */
+	 
 	
 	/**
 	 * Show the incident management panel. 
@@ -368,6 +372,9 @@ public class MainFrame extends JFrame {
 		repaint();
 	}
 	*/
-
+	
+	public void setSecurityManagementPanel(SecurityManagementPanel securityManagementPanel) {
+		this.securityGuardManagementPanel = securityManagementPanel;
+	}
 
 }

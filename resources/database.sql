@@ -192,6 +192,6 @@ CONSTRAINT `FK_CAR_PARKING_SLOT` FOREIGN KEY (`parking_slot`) REFERENCES `parkin
 -- -----------------------------------------------------
 -- Main application user
 -- -----------------------------------------------------
-DROP USER if exists 'pupsims'@'localhost';
-CREATE USER 'pupsims'@'localhost' IDENTIFIED BY 'pupsimspass_123';
-GRANT ALL PRIVILEGES ON `sims_db`.* TO 'pupsims'@'localhost';
+DROP USER 'sims'@'localhost';
+CREATE USER 'sims'@'localhost' IDENTIFIED BY 'admin123';
+GRANT ALL PRIVILEGES ON `sims_db`.* TO 'sims'@'localhost';

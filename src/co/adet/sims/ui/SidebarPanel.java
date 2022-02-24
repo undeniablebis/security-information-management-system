@@ -68,26 +68,15 @@ public class SidebarPanel extends JPanel {
 		
 		// Add empty space for the succeeding buttons
 		add(Box.createRigidArea(new Dimension(0, 20)));
-		
-		// Dashboard Button
-		JButton jbtnDashboardPanel = new JButton("Dashboard");
-		jbtnDashboardPanel.setBorderPainted(false);
-		jbtnDashboardPanel.setHorizontalAlignment(SwingConstants.LEFT);
-		jbtnDashboardPanel.setFocusPainted(false);
-		jbtnDashboardPanel.setForeground(Color.WHITE);
-		jbtnDashboardPanel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		jbtnDashboardPanel.setBorder(new EmptyBorder(0, 15, 0, 0));
-		jbtnDashboardPanel.setBackground(new Color(153, 0, 0));
-		jbtnDashboardPanel.setMaximumSize(new Dimension(32767, 40));
-		add(jbtnDashboardPanel);
+	
 		
 		// Security Guard Panel Button
 		JButton jbtnSecurityGuardPanel = new JButton("Security Guards");
-		/*
+		
 		jbtnSecurityGuardPanel.addActionListener(event -> {
 			mainFrame.showSecurityGuardManagementPanel();
 		});
-		*/
+		
 		jbtnSecurityGuardPanel.setBorderPainted(false);
 		jbtnSecurityGuardPanel.setHorizontalAlignment(SwingConstants.LEFT);
 		jbtnSecurityGuardPanel.setMaximumSize(new Dimension(32767, 40));

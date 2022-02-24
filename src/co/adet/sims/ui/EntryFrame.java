@@ -143,6 +143,7 @@ public class EntryFrame extends JFrame {
 								"Successfully logged in.",
 								"Success!",
 								JOptionPane.INFORMATION_MESSAGE);
+						setVisible(false);
 						administratorEntryPoint.setVisible(true);
 					}
 					else {
