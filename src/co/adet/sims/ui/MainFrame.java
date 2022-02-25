@@ -7,10 +7,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import co.adet.sims.ui.securityguards.SecurityManagementPanel;
-import co.adet.sims.ui.attendance.ManagementPanel;
-import co.adet.sims.ui.car.CarManagementPanel;
-
 /**
  * Main Frame of the Application. Every interaction possible for
  * this data-entry system is made in here.
@@ -46,26 +42,30 @@ public class MainFrame extends JFrame {
 	
 	/**
 	 * Violation management panel.
+	 */
 	 
-	protected oop.elbisri.pupsims.ui.violation.ManagementPanel violationManagementPanel;
-	*/
+	protected co.adet.sims.ui.violation.ViolationManagementPanel violationManagementPanel;
+	
 	
 	/**
 	 * Inpsection management panel.
+	 */
 	 
-	protected oop.elbisri.pupsims.ui.inspection.ManagementPanel inspectionManagementPanel;
-	*/
+	protected co.adet.sims.ui.inspection.InspectionManagementPanel inspectionManagementPanel;
+	
 	
 	/**
 	 * Parking slot management panel.
+	  */
 	
-	protected oop.elbisri.pupsims.ui.parking.ManagementPanel parkingManagementPanel;
-	 */
+	protected co.adet.sims.ui.parking.ParkingManagementPanel parkingManagementPanel;
+	
 	/**
 	 * Visitor Log management panel.
+	 */
 	 
-	protected oop.elbisri.pupsims.ui.visitor.ManagementPanel visitorManagementPanel;
-	*/
+	protected co.adet.sims.ui.visitor.VisitorManagementPanel visitorManagementPanel;
+	
 	/**
 	 * Car Log management panel.
 	 */
@@ -80,14 +80,16 @@ public class MainFrame extends JFrame {
 	 
 	/**
 	 * Incident Report Panel 
+	 */
 	 
-	protected oop.elbisri.pupsims.ui.incidentreport.ManagementPanel incidentManagementPanel; 
-	*/
+	protected co.adet.sims.ui.incidents.IncidentsManagementPanel incidentManagementPanel; 
+	
 	/**
 	 * Inventory Of Supplies Panel 
-	
-	protected oop.elbisri.pupsims.ui.inventoryofsupplies.ManagementPanel inventoryManagementPanel;
 	 */
+	
+	protected co.adet.sims.ui.inventory.InventoryManagementPanel inventoryManagementPanel;
+	
 	
 	/**
 	 * Construct the frame.
@@ -131,26 +133,31 @@ public class MainFrame extends JFrame {
 		// Add the Sidebar to the main sole pane of the frame
 		jpnlContentPane.add(sidebarPanel);
 		
-		/*
+		
 		
 		// Create the Violation Management Panel
-		violationManagementPanel = new oop.elbisri.pupsims.ui.violation.ManagementPanel();
+		violationManagementPanel = new co.adet.sims.ui.violation.ViolationManagementPanel();
+		
 		// Create the Building Inspection Management Panel
-		inspectionManagementPanel = new oop.elbisri.pupsims.ui.inspection.ManagementPanel();
+		inspectionManagementPanel = new co.adet.sims.ui.inspection.InspectionManagementPanel();
+		
 		// Create the Parking Slot Management Panel
-		parkingManagementPanel = new oop.elbisri.pupsims.ui.parking.ManagementPanel();
+		parkingManagementPanel = new co.adet.sims.ui.parking.ParkingManagementPanel();
 		
 		// Create the Incident Report Management Panel 
-		incidentManagementPanel = new oop.elbisri.pupsims.ui.incidentreport.ManagementPanel();
+		incidentManagementPanel = new co.adet.sims.ui.incidents.IncidentsManagementPanel();
 		// Create the Inventory of Supplies Management Panel
-		inventoryManagementPanel = new oop.elbisri.pupsims.ui.inventoryofsupplies.ManagementPanel();
-		visitorManagementPanel = new oop.elbisri.pupsims.ui.visitor.ManagementPanel();
+		inventoryManagementPanel = new co.adet.sims.ui.inventory.InventoryManagementPanel();
 		
-		*/
+		//Create the Visitor Management Panel
+		visitorManagementPanel = new co.adet.sims.ui.visitor.VisitorManagementPanel();
+
 		// Create the Security Guard Management Panel 
 		securityGuardManagementPanel = new co.adet.sims.ui.securityguards.SecurityManagementPanel(); 
+		
 		// Create the Attendance Management Panel
 		attendanceManagementPanel = new co.adet.sims.ui.attendance.ManagementPanel();
+		
 		//Create the Car Management Panel
 		carManagementPanel = new co.adet.sims.ui.car.CarManagementPanel();
 	}
@@ -182,6 +189,7 @@ public class MainFrame extends JFrame {
 	
 	/**
 	 * Show the violation management panel.
+	 	*/
 	 
 	public void showViolationManagementPanel() {
 		// If the current shown panel is the violation management panel, return.
@@ -201,10 +209,11 @@ public class MainFrame extends JFrame {
 		revalidate();
 		repaint();
 	}
-	*/
+
 	
 	/**
 	 * Show the building inspection management panel.
+	 */
 	
 	public void showInspectionManagementPanel() {
 		// If the current shown panel is the inspection management panel, return.
@@ -224,11 +233,12 @@ public class MainFrame extends JFrame {
 		revalidate();
 		repaint();
 	}
-	 */
+	 
 	
 	
 	/**
 	 * Show the parking slot management panel.
+	 */
 	
 	public void showParkingSlotManagementPanel() {
 		// If the current shown panel is the parking slot management panel, return.
@@ -251,9 +261,10 @@ public class MainFrame extends JFrame {
 		repaint();
 	}
 	
-	 */
+	
 	/**
 	 * Show the visitor log management panel.
+	 */
 	
 	public void showVisitorLogManagementPanel() {
 		// If the current shown panel is the visitor log management panel, return.
@@ -333,6 +344,7 @@ public class MainFrame extends JFrame {
 	
 	/**
 	 * Show the incident management panel. 
+	 */
 	
 	public void showIncidentManagementPanel() {
 		// Iff the current shown panel is the incident management panel, do nothing 
@@ -354,10 +366,11 @@ public class MainFrame extends JFrame {
 		revalidate();
 		repaint();
 	}
-	 */
+	
 	
 	/**
 	 * Show the inventory of supplies management panel.
+	 */
 	 
 	public void showInventoryManagementPanel() {
 		// Iff the current shown panel is the inventory management panel, do nothing
@@ -380,17 +393,4 @@ public class MainFrame extends JFrame {
 		revalidate();
 		repaint();
 	}
-	*/
-	
-	public void setSecurityManagementPanel(SecurityManagementPanel securityManagementPanel) {
-		this.securityGuardManagementPanel = securityManagementPanel;
-	}
-	
-	public void setAttendanceManagementPanel(ManagementPanel attendanceManagementPanel) {
-		this.attendanceManagementPanel = attendanceManagementPanel;
-	}
-	public void setCarManagementPanel(CarManagementPanel carManagementPanel) {
-		this.carManagementPanel = carManagementPanel;
-	}
-
 }

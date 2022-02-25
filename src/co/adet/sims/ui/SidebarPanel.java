@@ -108,11 +108,11 @@ public class SidebarPanel extends JPanel {
 		
 		// Visitors Panel Button
 		JButton jbtnVisitorLogPanel = new JButton("Visitor Log");
-		/*
+		
 		jbtnVisitorLogPanel.addActionListener(event -> {
 			mainFrame.showVisitorLogManagementPanel();
 		});
-		*/
+		
 		jbtnVisitorLogPanel.setBorderPainted(false);
 		jbtnVisitorLogPanel.setHorizontalAlignment(SwingConstants.LEFT);
 		jbtnVisitorLogPanel.setMaximumSize(new Dimension(32767, 40));
@@ -125,12 +125,12 @@ public class SidebarPanel extends JPanel {
 		
 		// Parking Slots Panel Button
 		JButton jbtnParkingSlotsPanel = new JButton("Parking Slots");
-		/*
+		
 		jbtnParkingSlotsPanel.addActionListener(event -> {
 			mainFrame.showParkingSlotManagementPanel();
 			//mainFrame.parkingManagementPanel.updateTable();
 		});
-		*/
+		
 		jbtnParkingSlotsPanel.setBorderPainted(false);
 		jbtnParkingSlotsPanel.setHorizontalAlignment(SwingConstants.LEFT);
 		jbtnParkingSlotsPanel.setMaximumSize(new Dimension(32767, 40));
@@ -161,11 +161,11 @@ public class SidebarPanel extends JPanel {
 		
 		// Incident Reporting Panel Button
 		JButton jbtnIncidentsReportPanel = new JButton("Incidents Report");
-		/*
+		
 		jbtnIncidentsReportPanel.addActionListener (event -> {
 			mainFrame.showIncidentManagementPanel();
 		});
-		*/
+		
 		jbtnIncidentsReportPanel.setBorderPainted(false);
 		jbtnIncidentsReportPanel.setHorizontalAlignment(SwingConstants.LEFT);
 		jbtnIncidentsReportPanel.setMaximumSize(new Dimension(32767, 40));
@@ -178,12 +178,12 @@ public class SidebarPanel extends JPanel {
 		
 		// Violator Logging Panel Button
 		JButton jbtnViolatorsReportPanel = new JButton("Violators Report");
-		/*
+		
 		jbtnViolatorsReportPanel.addActionListener(event -> {
 			mainFrame.showViolationManagementPanel();
 			mainFrame.violationManagementPanel.updateTable();
 		});
-		*/
+		
 		jbtnViolatorsReportPanel.setBorderPainted(false);
 		jbtnViolatorsReportPanel.setHorizontalAlignment(SwingConstants.LEFT);
 		jbtnViolatorsReportPanel.setMaximumSize(new Dimension(32767, 40));
@@ -196,12 +196,12 @@ public class SidebarPanel extends JPanel {
 		
 		// Inspection Log Panel Button
 		JButton jbtnInspectionLogPanel = new JButton("Inspection Log");
-		/*
+		
 		jbtnInspectionLogPanel.addActionListener(event -> {
 			mainFrame.showInspectionManagementPanel();
 			mainFrame.inspectionManagementPanel.updateTable();
 		});
-		*/
+		
 		jbtnInspectionLogPanel.setBorderPainted(false);
 		jbtnInspectionLogPanel.setHorizontalAlignment(SwingConstants.LEFT);
 		jbtnInspectionLogPanel.setMaximumSize(new Dimension(32767, 40));
@@ -213,11 +213,11 @@ public class SidebarPanel extends JPanel {
 		add(jbtnInspectionLogPanel);
 		
 		JButton jbtnInventory = new JButton("Inventory");
-		/*
+		
 		jbtnInventory.addActionListener(event -> {
 			mainFrame.showInventoryManagementPanel();
 		});
-		*/
+		
 		jbtnInventory.setMaximumSize(new Dimension(32767, 40));
 		jbtnInventory.setHorizontalAlignment(SwingConstants.LEFT);
 		jbtnInventory.setForeground(Color.WHITE);

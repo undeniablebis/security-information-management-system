@@ -28,7 +28,6 @@ public class EntryFrame extends JFrame {
 	private JPasswordField jpswrdfldPassword;
 	
 	private MainFrame administratorEntryPoint;
-	private SidebarPanel administratorSideBar;
 
 	/**
 	 * Create the dialog.
@@ -189,7 +188,5 @@ public void setAdministratorEntryPoint(MainFrame administratorEntryPoint) {
 	this.administratorEntryPoint = administratorEntryPoint;
 	}
 
-public void setAdministratorSideBar(SidebarPanel administratorSideBar) {
-	this.administratorSideBar = administratorSideBar;
-	}
+
 }

@@ -20,14 +20,9 @@ public class SimsApplication {
 	public static void main(String[] args) {
 	
 		MainFrame mainFrame = new MainFrame();
-		SidebarPanel sidebarPanel = new SidebarPanel();
-	
-		
-		
 		EntryFrame entryFrame = new EntryFrame();
 		entryFrame.setAdministratorEntryPoint(mainFrame);
-		entryFrame.setAdministratorSideBar(sidebarPanel);
-		
+	
 		SwingUtilities.invokeLater(() -> entryFrame.setVisible(true));
 	}
 
