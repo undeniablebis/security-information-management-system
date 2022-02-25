@@ -89,12 +89,12 @@ public class SidebarPanel extends JPanel {
 		
 		// Attendance Panel Button
 		JButton jbtnAttendancePanel = new JButton("Attendance");
-		/*
+		
 		jbtnAttendancePanel.addActionListener(event -> {
 			mainFrame.showAttendanceManagementPanel();
 			mainFrame.attendanceManagementPanel.updateTable();
 		});
-		*/
+		
 		
 		jbtnAttendancePanel.setBorderPainted(false);
 		jbtnAttendancePanel.setHorizontalAlignment(SwingConstants.LEFT);
@@ -143,12 +143,12 @@ public class SidebarPanel extends JPanel {
 		
 		// Car History Panel Button
 		JButton jbtnCarLogPanel = new JButton("Car Log");
-		/*
+		
 		jbtnCarLogPanel.addActionListener(evemt -> {
 			mainFrame.showCarManagementPanel();
 		});
 		
-		*/
+		
 		jbtnCarLogPanel.setBorderPainted(false);
 		jbtnCarLogPanel.setHorizontalAlignment(SwingConstants.LEFT);
 		jbtnCarLogPanel.setMaximumSize(new Dimension(32767, 40));
