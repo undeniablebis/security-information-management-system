@@ -9,6 +9,7 @@ import java.awt.Insets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ import javax.swing.border.EmptyBorder;
  * @author Elmer M. Cuenca
  *
  */
-public class AddDialog extends JDialog {
+public class UpdateDialog extends JDialog {
 
 	/**
 	 * Default Serial Version UID (for serializability, not important, placed to
@@ -51,18 +52,18 @@ public class AddDialog extends JDialog {
 	private JTextField jtxtfldTINNumber;
 	private JRadioButton jrdbtnFemale;
 	private JRadioButton jrdbtnMale;
+	private int accountIdCurrentlyBeingUpdated;
 
 	/**
 	 * Create the dialog.
 	 */
-	public AddDialog() {
+	public UpdateDialog() {
 
 		// For reference later
-		AddDialog thisDialog = this;
+		UpdateDialog thisDialog = this;
 
 		// Title Details
 		setTitle("New Employee Details");
-		
 		setResizable(false);
 
 		setBounds(100, 100, 450, 300);
@@ -259,8 +260,8 @@ public class AddDialog extends JDialog {
 					}
 					try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db",
 								"sims", "admin123");
-						PreparedStatement insertStatement = connection.prepareStatement(
-								"INSERT INTO security_guard(first_name, middle_name, last_name, sex, sss_id, tin_number) VALUES(?, ?, ?, ?, ?, ?)")){
+						PreparedStatement updateStatement = connection.prepareStatement(
+								"UPDATE security_guard set first_name = ?, middle_name = ?, last_name = ?, sex = ?, sss_id = ?, tin_number = ? where employee_id = ?")){
 						/* Sex option */
 						// String holder for user input for sex
 						String sex = " ";
@@ -270,13 +271,14 @@ public class AddDialog extends JDialog {
 						else if (jrdbtnMale.isSelected())
 							sex = "Male";
 						
-						insertStatement.setString(1, firstName);
-						insertStatement.setString(2, middleName);
-						insertStatement.setString(3, lastName);
-						insertStatement.setString(4, sex);
-						insertStatement.setLong(5, sssNumber);
-						insertStatement.setLong(6, tinNumber);													
-						insertStatement.execute();
+						updateStatement.setString(1, firstName);
+						updateStatement.setString(2, middleName);
+						updateStatement.setString(3, lastName);
+						updateStatement.setString(4, sex);
+						updateStatement.setLong(5, sssNumber);
+						updateStatement.setLong(6, tinNumber);	
+						updateStatement.setInt(7, accountIdCurrentlyBeingUpdated);
+						updateStatement.execute();
 						connection.close();
 
 						JOptionPane.showMessageDialog(null, "Security guard successfully created!");
@@ -303,6 +305,37 @@ public class AddDialog extends JDialog {
 			}
 		}
 	}
+	
+	public void initializeWithAccountId(int accountID) {
+		
+		try(Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db",
+				"sims", "admin123");
+				PreparedStatement retrieveAccountByIdStatement = connection.prepareStatement("SELECT * FROM security_guard WHERE employee_id = ?")){
+				
+				retrieveAccountByIdStatement.setInt(1, accountID);
+				retrieveAccountByIdStatement.execute();
+				
+				ResultSet accountResult = retrieveAccountByIdStatement.getResultSet();
+				accountResult.next();
+				
+				accountIdCurrentlyBeingUpdated = accountResult.getInt("employee_id");
+				
+				jtxtfldFirstName.setText(accountResult.getString("first_name"));
+				jtxtfldMiddleName.setText(accountResult.getString("middle_name"));
+				jtxtfldLastName.setText(accountResult.getString("last_name"));
+				jtxtfldSSSID.setText(accountResult.getString("sss_id"));
+				jtxtfldTINNumber.setText(accountResult.getString("tin_number"));
+				
+				String sex = accountResult.getString("sex");
+				if(sex.equals("Male"))
+					jrdbtnMale.setSelected(true);
+				else if(sex.equals("Female"))
+					jrdbtnFemale.setSelected(true);		
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, "An error occured while trying to fetch account data. Please try again. \n\nDetails" 
+					+ e.getMessage());
+		}
+	}
 
 	public void resetForm() {
 		jtxtfldFirstName.setText("");
@@ -310,6 +343,7 @@ public class AddDialog extends JDialog {
 		jtxtfldLastName.setText("");
 		jtxtfldSSSID.setText("");
 		jtxtfldTINNumber.setText("");
-	}
+	
 
+	}
 }
