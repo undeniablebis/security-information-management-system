@@ -99,7 +99,7 @@ public class MainFrame extends JFrame {
 		setBackground(Color.WHITE);
 		
 		// Set title
-		setTitle("PUP-SIMS");
+		setTitle("Security Information Management System");
 		
 		// When this frame is closed, the JFrame gets dumped
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
