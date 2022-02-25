@@ -89,12 +89,12 @@ public class SidebarPanel extends JPanel {
 		
 		// Attendance Panel Button
 		JButton jbtnAttendancePanel = new JButton("Attendance");
-		/*
+		
 		jbtnAttendancePanel.addActionListener(event -> {
 			mainFrame.showAttendanceManagementPanel();
 			mainFrame.attendanceManagementPanel.updateTable();
 		});
-		*/
+		
 		
 		jbtnAttendancePanel.setBorderPainted(false);
 		jbtnAttendancePanel.setHorizontalAlignment(SwingConstants.LEFT);

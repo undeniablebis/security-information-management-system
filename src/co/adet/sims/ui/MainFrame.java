@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import co.adet.sims.ui.securityguards.SecurityManagementPanel;
+import co.adet.sims.ui.attendance.ManagementPanel;
 
 /**
  * Main Frame of the Application. Every interaction possible for
@@ -37,9 +38,10 @@ public class MainFrame extends JFrame {
 	
 	/**
 	 * Attendance management panel.
-	
-	protected oop.elbisri.pupsims.ui.attendance.ManagementPanel attendanceManagementPanel;
 	 */
+	
+	protected co.adet.sims.ui.attendance.ManagementPanel attendanceManagementPanel;
+	
 	
 	/**
 	 * Violation management panel.
@@ -128,8 +130,7 @@ public class MainFrame extends JFrame {
 		jpnlContentPane.add(sidebarPanel);
 		
 		/*
-		// Create the Attendance Management Panel
-		attendanceManagementPanel = new oop.elbisri.pupsims.ui.attendance.ManagementPanel();
+		
 		// Create the Violation Management Panel
 		violationManagementPanel = new oop.elbisri.pupsims.ui.violation.ManagementPanel();
 		// Create the Building Inspection Management Panel
@@ -146,10 +147,13 @@ public class MainFrame extends JFrame {
 		*/
 		// Create the Security Guard Management Panel 
 		securityGuardManagementPanel = new co.adet.sims.ui.securityguards.SecurityManagementPanel(); 
+		// Create the Attendance Management Panel
+		attendanceManagementPanel = new co.adet.sims.ui.attendance.ManagementPanel();
 	}
 	
 	/**
 	 * Show the attendance management panel.
+	 */
 	 
 	public void showAttendanceManagementPanel() {
 		// If another panel is shown, remove it from the content pane
@@ -170,7 +174,7 @@ public class MainFrame extends JFrame {
 		repaint();
 		
 	}
-	*/
+	
 	
 	/**
 	 * Show the violation management panel.
@@ -375,6 +379,10 @@ public class MainFrame extends JFrame {
 	
 	public void setSecurityManagementPanel(SecurityManagementPanel securityManagementPanel) {
 		this.securityGuardManagementPanel = securityManagementPanel;
+	}
+	
+	public void setAttendanceManagementPanel(ManagementPanel attendanceManagementPanel) {
+		this.attendanceManagementPanel = attendanceManagementPanel;
 	}
 
 }
