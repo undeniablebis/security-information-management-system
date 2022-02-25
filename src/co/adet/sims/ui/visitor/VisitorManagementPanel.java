@@ -79,6 +79,7 @@ public class VisitorManagementPanel extends JPanel {
 
 		/* jbtnShowAddForm - button for adding new visitors */
 		JButton jbtnShowAddForm = new JButton("Add");
+		jbtnShowAddForm.setBackground(Color.WHITE);
 		jbtnShowAddForm.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		jbtnShowAddForm.addActionListener(event -> {
 			visitorAddDialog.resetForm();
