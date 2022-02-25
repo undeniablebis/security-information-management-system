@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import co.adet.sims.ui.securityguards.SecurityManagementPanel;
 import co.adet.sims.ui.attendance.ManagementPanel;
+import co.adet.sims.ui.car.CarManagementPanel;
 
 /**
  * Main Frame of the Application. Every interaction possible for
@@ -66,10 +67,11 @@ public class MainFrame extends JFrame {
 	protected oop.elbisri.pupsims.ui.visitor.ManagementPanel visitorManagementPanel;
 	*/
 	/**
-	 * Visitor Log management panel.
+	 * Car Log management panel.
+	 */
 	 
-	protected oop.elbisri.pupsims.ui.car.ManagementPanel carManagementPanel;
-	*/
+	protected co.adet.sims.ui.car.CarManagementPanel carManagementPanel;
+	
 	
 	/**
 	 * Security Guard Panel 
@@ -143,12 +145,14 @@ public class MainFrame extends JFrame {
 		// Create the Inventory of Supplies Management Panel
 		inventoryManagementPanel = new oop.elbisri.pupsims.ui.inventoryofsupplies.ManagementPanel();
 		visitorManagementPanel = new oop.elbisri.pupsims.ui.visitor.ManagementPanel();
-		carManagementPanel = new oop.elbisri.pupsims.ui.car.ManagementPanel();
+		
 		*/
 		// Create the Security Guard Management Panel 
 		securityGuardManagementPanel = new co.adet.sims.ui.securityguards.SecurityManagementPanel(); 
 		// Create the Attendance Management Panel
 		attendanceManagementPanel = new co.adet.sims.ui.attendance.ManagementPanel();
+		//Create the Car Management Panel
+		carManagementPanel = new co.adet.sims.ui.car.CarManagementPanel();
 	}
 	
 	/**
@@ -274,6 +278,7 @@ public class MainFrame extends JFrame {
 	
 	/**
 	 * Show the visitor log management panel.
+	 */
 	
 	public void showCarManagementPanel() {
 		// If the current shown panel is the car management panel, return.
@@ -295,7 +300,7 @@ public class MainFrame extends JFrame {
 		revalidate();
 		repaint();
 	}
-	 */
+	
 	
 	
 	
@@ -383,6 +388,9 @@ public class MainFrame extends JFrame {
 	
 	public void setAttendanceManagementPanel(ManagementPanel attendanceManagementPanel) {
 		this.attendanceManagementPanel = attendanceManagementPanel;
+	}
+	public void setCarManagementPanel(CarManagementPanel carManagementPanel) {
+		this.carManagementPanel = carManagementPanel;
 	}
 
 }

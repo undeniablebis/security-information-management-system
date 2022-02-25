@@ -143,12 +143,12 @@ public class SidebarPanel extends JPanel {
 		
 		// Car History Panel Button
 		JButton jbtnCarLogPanel = new JButton("Car Log");
-		/*
+		
 		jbtnCarLogPanel.addActionListener(evemt -> {
 			mainFrame.showCarManagementPanel();
 		});
 		
-		*/
+		
 		jbtnCarLogPanel.setBorderPainted(false);
 		jbtnCarLogPanel.setHorizontalAlignment(SwingConstants.LEFT);
 		jbtnCarLogPanel.setMaximumSize(new Dimension(32767, 40));
