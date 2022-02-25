@@ -17,10 +17,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import javax.swing.DefaultComboBoxModel;
@@ -42,7 +40,7 @@ import javax.swing.border.EmptyBorder;
  * @author Rian Carlo Reyes
  *
  */
-public class AddDialog extends JDialog {
+public class UpdateDialog extends JDialog {
 
 	/**
 	 * Default Serial Version UID (for serializability, not important, placed to
@@ -71,10 +69,10 @@ public class AddDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public AddDialog() {
+	public UpdateDialog() {
 
 		// For reference later
-		AddDialog thisDialog = this;
+		UpdateDialog thisDialog = this;
 
 		// Set minimum size
 		setMinimumSize(new Dimension(400, 400));
@@ -265,7 +263,6 @@ public class AddDialog extends JDialog {
 		jbtnLog.addActionListener(event -> {
 			// Save the constructed attendance object, with a SwingWorker
 			new SwingWorker<Void, Void>() {
-				@SuppressWarnings("null")
 				@Override
 				protected Void doInBackground() throws Exception {
 
@@ -278,22 +275,19 @@ public class AddDialog extends JDialog {
 						errorMessageList.add(
 								"Security Guard must not be null. Ensure that you have a valid security guard registered first and selected!");
 					}
-					
-					
+
 					LocalTime workIn = null;
-					/*
 					try {
 						workIn = LocalTime.parse(jtxtfldWorkIn.getText(), DateTimeFormatter.ISO_TIME);
 					} catch (DateTimeParseException e) {
 						errorMessageList.add("Invalid work in field. Must be of the format: HH:mm:ss");
 					}
-					*/
 
 					LocalTime workOut = null;
 					try {
-						workOut = LocalTime.parse(jtxtfldWorkOut.getText(), DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT));
+						workOut = LocalTime.parse(jtxtfldWorkOut.getText(), DateTimeFormatter.ISO_TIME);
 					} catch (DateTimeParseException e) {
-						errorMessageList.add("Invalid work out field. Must be of the format: HH:mm");
+						errorMessageList.add("Invalid work out field. Must be of the format: HH:mm:ss");
 					}
 
 					String remarks = jtxtareaRemarks.getText();
@@ -357,7 +351,7 @@ public class AddDialog extends JDialog {
 	public void resetForm() {
 		jcmbSecurityGuard.removeAllItems();
 
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db", "sims",
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims", "sims",
 				"admin123");
 				Statement retrieveStatement = connection.createStatement();
 				ResultSet securityGuardsResultSet = retrieveStatement.executeQuery("SELECT * FROM security_guard")) {
@@ -370,18 +364,12 @@ public class AddDialog extends JDialog {
 			JOptionPane.showMessageDialog(null,
 					"An error occured while trying to load security guards into combobox.\n\nMessage: " + e);
 		}
-		
-		DateTimeFormatter noSeconds = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
-				.withLocale(Locale.ENGLISH);
-		
+
 		jtxtfldLogDate.setText(LocalDate.now().toString());
-		jtxtfldWorkIn.setText(LocalTime.now().withNano(0).format(noSeconds).toString());
+		jtxtfldWorkIn.setText("");
 		jtxtfldWorkOut.setText("");
 		jtxtareaRemarks.setText("");
 		jcmbStatus.setSelectedIndex(0);
-		
-		jtxtfldLogDate.setEditable(false);
-		jtxtfldWorkIn.setEditable(false);
 	}
 
 }
