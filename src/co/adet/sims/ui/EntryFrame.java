@@ -188,5 +188,5 @@ public void setAdministratorEntryPoint(MainFrame administratorEntryPoint) {
 	this.administratorEntryPoint = administratorEntryPoint;
 	}
 
-//end
+
 }

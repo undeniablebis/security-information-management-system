@@ -236,4 +236,4 @@ public class SidebarPanel extends JPanel {
 
 }
 
-//end
+
