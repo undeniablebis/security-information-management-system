@@ -97,6 +97,8 @@ public class VisitorManagementPanel extends JPanel {
 			visitorAddDialog.setVisible(true);
 		});
 		
+		jpnlButtonActions.add(jbtnShowAddForm);
+		
 		JButton jbtnUpdate = new JButton("Update");
 		jbtnUpdate.setBackground(Color.WHITE);
 		jbtnUpdate.setFont(new Font("Segoe UI", Font.PLAIN, 14));
