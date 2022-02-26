@@ -10,6 +10,7 @@ import java.awt.Insets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
@@ -29,11 +30,11 @@ import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 
 /**
- * Add form dialog for logging new Violations.
+ * Update form dialog for Violations.
  * 
  * @author Jeremy A. Cube
  */
-public class AddDialog extends JDialog {
+public class UpdateDialog extends JDialog {
 
 	/**
 	 * Default Serial Version UID (for serializability, not important, placed to
@@ -53,17 +54,18 @@ public class AddDialog extends JDialog {
 	private JTextField jtxtfldDate;
 	private JTextField jtxtfldTime;
 	private JComboBox<String> jcmbStatus;
+	private int accountIdCurrentlyBeingUpdated;
 
 	/**
 	 * Create the dialog.
 	 */
-	public AddDialog() {
+	public UpdateDialog() {
 
 		// For reference later
-		AddDialog thisDialog = this;
+		UpdateDialog thisDialog = this;
 
 		/* Dialog Properties */
-		setMinimumSize(new Dimension(700, 300));
+		setMinimumSize(new Dimension(700, 600));
 		setTitle("Log new Violation");
 		/* END OF Dialog Properties */
 
@@ -93,19 +95,22 @@ public class AddDialog extends JDialog {
 				protected Void doInBackground() throws Exception {
 					try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db",
 							"sims", "admin123");
-							PreparedStatement insertStatement = connection.prepareStatement(
-									"INSERT INTO violation VALUES (NULL, ?, ?, ?, ?, ?, ?, ?)")) {
+							PreparedStatement updateStatement = connection.prepareStatement(
+									"UPDATE violation set violator_name = ?, violator_contact_number = ?, type = ?, committed_on = ?, status = ? where id = ?")){
 
-						insertStatement.setString(1, jtxtfldCompleteName.getText());
-						insertStatement.setString(2, jtxtfldContactNumber.getText());
-						insertStatement.setString(3, jtxtfldViolationType.getText());
-						insertStatement.setString(4, LocalDateTime.parse(jtxtfldDate.getText() + "T" + jtxtfldTime.getText()).toString());
-						insertStatement.setString(5, (String) jcmbStatus.getSelectedItem());
-						insertStatement.setString(6, jtxtfldDate.getText());
-						insertStatement.setString(7, jtxtfldTime.getText());
-
-						insertStatement.execute();
-					} catch (DateTimeParseException e) {
+						updateStatement.setString(1, jtxtfldCompleteName.getText());
+						updateStatement.setString(2, jtxtfldContactNumber.getText());
+						updateStatement.setString(3, jtxtfldViolationType.getText());
+						updateStatement.setString(4, LocalDateTime.parse(jtxtfldDate.getText() + "T" + jtxtfldTime.getText()).toString());
+						updateStatement.setString(5, (String) jcmbStatus.getSelectedItem());
+						updateStatement.setInt(6, accountIdCurrentlyBeingUpdated);
+						updateStatement.execute();
+						connection.close();
+						
+						violationManagementPanel.updateTable();
+						
+					}
+					catch (DateTimeParseException e) {
 						// If an error occured while parsing the datetime fields,
 						// output a friendly message
 						JOptionPane.showMessageDialog(thisDialog,
@@ -216,6 +221,7 @@ public class AddDialog extends JDialog {
 		jpnlForm.add(jtxtfldViolationType, gbc_jtxtfldViolationType);
 		/* END OF jtxtfldViolationType */
 
+
 		/* jlblDate - label for date input */
 		JLabel jlblDate = new JLabel("Date:");
 		jlblDate.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -288,6 +294,7 @@ public class AddDialog extends JDialog {
 		jpnlForm.add(jtxtfldTime, gbc_jtxtfldTime);
 		/* END OF jtxtfldTime */
 
+
 		/* jlblStatus - label for status input */
 		JLabel jlblStatus = new JLabel("Status:");
 		jlblStatus.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -311,6 +318,34 @@ public class AddDialog extends JDialog {
 		jpnlForm.add(jcmbStatus, gbc_jcmbStatus);
 		/* END OF jcmbStatus */
 
+	}
+	
+public void initializeWithAccountId(int accountID) {
+		
+		try(Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db",
+				"sims", "admin123");
+				PreparedStatement retrieveAccountByIdStatement = connection.prepareStatement("SELECT * FROM violation WHERE id = ?")){
+				
+				retrieveAccountByIdStatement.setInt(1, accountID);
+				retrieveAccountByIdStatement.execute();
+				
+				ResultSet accountResult = retrieveAccountByIdStatement.getResultSet();
+				accountResult.next();
+				
+				accountIdCurrentlyBeingUpdated = accountResult.getInt("id");
+				
+				jtxtfldCompleteName.setText(accountResult.getString("violator_name"));
+				jtxtfldViolationType.setText(accountResult.getString("type"));
+				jtxtfldDate.setText(accountResult.getString("viodate"));
+				jtxtfldTime.setText(accountResult.getString("viotime"));
+				jtxtfldContactNumber.setText(accountResult.getString("violator_contact_number"));
+				jcmbStatus.setSelectedItem(accountResult.getString("status"));
+				
+				
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, "An error occured while trying to fetch account data. Please try again. \n\nDetails" 
+					+ e.getMessage());
+		}
 	}
 
 	/**
