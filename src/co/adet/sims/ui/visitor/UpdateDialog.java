@@ -10,6 +10,7 @@ import java.awt.Insets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -34,8 +35,11 @@ import javax.swing.border.EmptyBorder;
  * @author Bismillah C. Constantino
  *
  */
-public class AddDialog extends JDialog {
 
+
+public class UpdateDialog extends JDialog {
+	DateTimeFormatter noSeconds = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+			.withLocale(Locale.ENGLISH);
 	/**
 	 * Default Serial Version UID (for serializability, not important, placed to remove warnings)
 	 */
@@ -59,13 +63,14 @@ public class AddDialog extends JDialog {
 	private JButton jbtnOk;
 	private JButton jbtnCancel;
 	private JComboBox<String> jcmbVisitorType;
+	private int visitorIdCurrentlyBeingUpdated;
 
 	protected VisitorManagementPanel visitorManagementPanel;
 
 	
-	public AddDialog() {
+	public UpdateDialog() {
 		//For reference later
-		AddDialog thisDialog = this;
+		UpdateDialog thisDialog = this;
 		
 		//prevent user to resize the dialog
 		setResizable(false);
@@ -223,7 +228,7 @@ public class AddDialog extends JDialog {
 		jbtnOk.setBackground(Color.WHITE);
 		jbtnOk.setFocusable(false);
 		jbtnOk.addActionListener(event ->{
-			
+			 
 			String nameOfVisitor = jtxtfldNameOfVisitor.getText();
 			String purposeOfVisit = txtPurposeOfVisit.getText();
 			String timeOfVisit = jtxtfldTimeOfVisit.getText();
@@ -232,25 +237,25 @@ public class AddDialog extends JDialog {
 			
 			try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db", 
 					"sims", "admin123");
-				PreparedStatement insertStatement = connection.prepareStatement(
-						"INSERT INTO visitor_log(name_of_visitor, visitor_type, purpose_of_visit, time_of_visit, time_of_leave) VALUES(?, ?, ?, ?, ?)")){
+				PreparedStatement updateStatement = connection.prepareStatement(
+						"UPDATE visitor_log set name_of_visitor = ?, visitor_type = ?, purpose_of_visit = ?, time_of_visit = ?, time_of_leave = ? WHERE id = ?")){
 				
-				insertStatement.setString(1, nameOfVisitor);
-				insertStatement.setString(2, (String) jcmbVisitorType.getSelectedItem());
-				insertStatement.setString(3, purposeOfVisit);
-				insertStatement.setString(4, timeOfVisit);
-				insertStatement.setString(5, timeOfLeave);
-				insertStatement.execute();
+				updateStatement.setString(1, nameOfVisitor);
+				updateStatement.setString(2, (String) jcmbVisitorType.getSelectedItem());
+				updateStatement.setString(3, purposeOfVisit);
+				updateStatement.setString(4, timeOfVisit);
+				updateStatement.setString(5, timeOfLeave);
+				updateStatement.setInt(6, visitorIdCurrentlyBeingUpdated);
+				updateStatement.execute();
 				connection.close();
 				
-				JOptionPane.showMessageDialog(thisDialog, "Visitor successfully added.");
+				JOptionPane.showMessageDialog(thisDialog, "Visitor successfully updated.");
 				
 				//
 				this.resetForm();
 				this.setVisible(false);
+				visitorManagementPanel.updateTable();
 				
-				//update the table
-				visitorManagementPanel.updateTable();				
 			} catch (SQLException e) {
 				JOptionPane.showMessageDialog(thisDialog, "An error occured while saving.\n\nDetails: "+e);
 			}
@@ -271,12 +276,42 @@ public class AddDialog extends JDialog {
 		buttonPane.add(jbtnCancel);
 		
 	}
+	public void initializeWithVisitorId(int visitorID) {
+		
+		jtxtfldTimeOfLeave.setText(LocalTime.now().withNano(0).format(noSeconds).toString());
+		
+		jtxtfldTimeOfVisit.setEditable(false);
+		jtxtfldTimeOfLeave.setEditable(false);
+		
+		try(Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db",
+				"sims", "admin123");
+				PreparedStatement retrieveVisitorByIdStatement = connection.prepareStatement("SELECT * FROM visitor_log WHERE id = ?")){
+				
+				retrieveVisitorByIdStatement.setInt(1, visitorID);
+				retrieveVisitorByIdStatement.execute();
+				
+				ResultSet visitorResult = retrieveVisitorByIdStatement.getResultSet();
+				visitorResult.next();
+				
+				visitorIdCurrentlyBeingUpdated = visitorResult.getInt("id");
+				
+				jtxtfldNameOfVisitor.setText(visitorResult.getString("name_of_visitor"));
+				txtPurposeOfVisit.setText(visitorResult.getString("purpose_of_visit"));
+				jtxtfldTimeOfVisit.setText(visitorResult.getString("time_of_visit"));
+				
+				String visitorType = visitorResult.getString("visitor_type");
+				if(visitorType.equals("Alumnus"))
+					jcmbVisitorType.setSelectedIndex(0);
+				else if(visitorType.equals("Parent"))
+					jcmbVisitorType.setSelectedIndex(1);	
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(this, "An error occured while trying to fetch account data. Please try again. \n\nDetails: " 
+					+ e.getMessage());
+		}
+	}
 	
 	public void resetForm() {
 
-		DateTimeFormatter noSeconds = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
-				.withLocale(Locale.ENGLISH);
-		
 		
 		jtxtfldNameOfVisitor.setText("");
 		txtPurposeOfVisit.setText("");
@@ -286,4 +321,5 @@ public class AddDialog extends JDialog {
 		jtxtfldTimeOfVisit.setEditable(false);
 		jtxtfldTimeOfLeave.setEditable(false);
 	}
+	
 }

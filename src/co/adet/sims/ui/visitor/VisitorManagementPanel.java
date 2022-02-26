@@ -4,10 +4,17 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -39,6 +46,7 @@ public class VisitorManagementPanel extends JPanel {
 	 * Add Form Dialog of this panel.
 	 */
 	protected AddDialog visitorAddDialog;
+	protected UpdateDialog visitorUpdateDialog;
 	
 	protected VisitorTableModel visitorTableModel;
 	
@@ -46,6 +54,9 @@ public class VisitorManagementPanel extends JPanel {
 	 * Construct the panel.
 	 */
 	public VisitorManagementPanel() {
+		
+		VisitorManagementPanel thisPanel = this;
+		
 		// Set background to white
 		setBackground(Color.WHITE);
 		// Set border to EmptyBorder for spacing
@@ -85,7 +96,109 @@ public class VisitorManagementPanel extends JPanel {
 			visitorAddDialog.resetForm();
 			visitorAddDialog.setVisible(true);
 		});
+		
+		JButton jbtnRefresh = new JButton("Refresh");
+		jbtnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				updateTable();
+			}
+		});
+		jpnlButtonActions.add(jbtnRefresh);
 		jpnlButtonActions.add(jbtnShowAddForm);
+		
+		JButton jbtnUpdate = new JButton("Update");
+		jbtnUpdate.setBackground(Color.WHITE);
+		jbtnUpdate.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		jbtnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedRowIndexOnTable = jtblVisitorLog.getSelectedRow();
+				if(selectedRowIndexOnTable == -1) {
+					JOptionPane.showMessageDialog(thisPanel, 
+							"Please select a visitor first before clicking this button.", "Warning!",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				int databaseIdOfSelectedVisitor = (int) jtblVisitorLog.getValueAt(selectedRowIndexOnTable, 0);
+				
+				visitorUpdateDialog.initializeWithVisitorId(databaseIdOfSelectedVisitor);
+				visitorUpdateDialog.setVisible(true);
+				
+				
+			}
+		});
+		
+		jpnlButtonActions.add(jbtnUpdate);
+		
+		JButton jbtnDelete = new JButton("Delete");
+		jbtnDelete.setBackground(Color.WHITE);
+		jbtnDelete.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		jbtnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedRowIndexOnTable = jtblVisitorLog.getSelectedRow();
+				if (selectedRowIndexOnTable == -1) {
+					JOptionPane.showMessageDialog(thisPanel, 
+							"Please select a member first before clicking this button.", "Warning!",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				if (JOptionPane.showConfirmDialog(thisPanel, 
+						"Are you sure you want to delete this visitor?") == JOptionPane.YES_OPTION) {
+					
+					int databaseIdOfSelectedVisitor = (int) jtblVisitorLog.getValueAt(selectedRowIndexOnTable, 0);
+					try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db",
+							"sims", "admin123");
+							PreparedStatement deleteStatement = connection
+									.prepareStatement("DELETE FROM visitor_log WHERE id = ?")){
+						deleteStatement.setInt(1, databaseIdOfSelectedVisitor);
+						deleteStatement.execute();
+						
+						JOptionPane.showMessageDialog(thisPanel, "Successfully deleted account.", "Success!",
+								JOptionPane.INFORMATION_MESSAGE);
+						updateTable();
+					} catch (SQLException e1) {
+						JOptionPane.showMessageDialog(thisPanel, 
+								"An error occured while fetching members from the database. \n\nDetails: " 
+						+ e1.getMessage());
+					}
+							
+				}
+			}
+		});
+		/**
+		jbtnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedRowIndexOnTable = jtblVisitorLog.getSelectedRow();
+				if (selectedRowIndexOnTable == -1) {
+					JOptionPane.showMessageDialog(thisPanel, "Please select a visitor first vefore clicking this button.", "Warning!",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				if (JOptionPane.showConfirmDialog(thisPanel, 
+						"Are you sure you want to delete this visitor?") == JOptionPane.YES_OPTION){
+					
+					int databaseIdOfSelectedVisitor = (int) jtblVisitorLog.getValueAt(selectedRowIndexOnTable, 0);
+					try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db",
+							"sims", "admin123");
+							PreparedStatement deleteStatement = connection
+									.prepareStatement("DELETE FROM visitor_log WHERE id = ?")){
+						deleteStatement.setInt(1, databaseIdOfSelectedVisitor);
+						deleteStatement.execute();
+						
+						JOptionPane.showMessageDialog(thisPanel, "Successfully deleted visitor.", "Success!",
+								JOptionPane.INFORMATION_MESSAGE);
+						updateTable();
+					} catch (SQLException e1) {
+						JOptionPane.showConfirmDialog(thisPanel,
+								"An error occured while fetching visitors from the database. \n\nDetails: " +e1.getMessage());
+					}
+		
+					
+				}
+			}
+			
+		});
+		*/
+		jpnlButtonActions.add(jbtnDelete);
 		/* END OF jbtnShowAddForm */
 		
 		/* jscrlpnVisitorTable - Scrollable Table Panel */
@@ -111,7 +224,12 @@ public class VisitorManagementPanel extends JPanel {
 		
 		// Create the add form dialog
 		visitorAddDialog = new AddDialog();
+		visitorUpdateDialog = new UpdateDialog();
+		
+		
 		visitorAddDialog.visitorManagementPanel = this;
+		visitorUpdateDialog.visitorManagementPanel = this;
+		
 	}
 	
 	public void updateTable() {

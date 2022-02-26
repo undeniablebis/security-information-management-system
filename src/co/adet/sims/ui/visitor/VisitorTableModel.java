@@ -99,7 +99,7 @@ public class VisitorTableModel extends AbstractTableModel {
 	}
 	
 	public void refresh() {
-		try(Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pupsims_db", "pupsims", "pupsimspass_123");
+		try(Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db", "sims", "admin123");
 			Statement retrieveStatement = connection.createStatement();
 			ResultSet visitorsResultSet = retrieveStatement.executeQuery("SELECT * FROM visitor_log")) {
 			
