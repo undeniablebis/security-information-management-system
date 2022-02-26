@@ -18,6 +18,7 @@ public class ViolationTableModel extends AbstractTableModel {
 		String name;
 		String when;
 		String status;
+		int id;
 	}
 
 	/**
@@ -107,7 +108,7 @@ public class ViolationTableModel extends AbstractTableModel {
 		
 		// First Column - Row Number (1-based for user-friendliness)
 		case 0:
-			return rowIndex + 1;
+			return violationRecord.id;
 			
 		// Second Column - Type
 		case 1:
@@ -141,14 +142,15 @@ public class ViolationTableModel extends AbstractTableModel {
 		new SwingWorker<List<ViolationRecord>, Void>() {
 			@Override
 			protected List<ViolationRecord> doInBackground() throws Exception {
-				try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pupsims_db",
-						"pupsims", "pupsimspass_123");
+				try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db",
+						"sims", "admin123");
 						Statement retrieveStatement = connection.createStatement();
 						ResultSet violationsResultSet = retrieveStatement.executeQuery("SELECT * FROM violation")) {
 
 					List<ViolationRecord> violations = new ArrayList<>();
 					while (violationsResultSet.next()) {
 						ViolationRecord violationRecord = new ViolationRecord();
+						violationRecord.id = violationsResultSet.getInt("id");
 						violationRecord.type = violationsResultSet.getString("type");
 						violationRecord.name = violationsResultSet.getString("violator_name");
 						violationRecord.when = violationsResultSet.getString("committed_on");
