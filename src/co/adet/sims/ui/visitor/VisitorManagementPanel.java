@@ -164,40 +164,7 @@ public class VisitorManagementPanel extends JPanel {
 				}
 			}
 		});
-		/**
-		jbtnDelete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int selectedRowIndexOnTable = jtblVisitorLog.getSelectedRow();
-				if (selectedRowIndexOnTable == -1) {
-					JOptionPane.showMessageDialog(thisPanel, "Please select a visitor first vefore clicking this button.", "Warning!",
-							JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-				if (JOptionPane.showConfirmDialog(thisPanel, 
-						"Are you sure you want to delete this visitor?") == JOptionPane.YES_OPTION){
-					
-					int databaseIdOfSelectedVisitor = (int) jtblVisitorLog.getValueAt(selectedRowIndexOnTable, 0);
-					try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db",
-							"sims", "admin123");
-							PreparedStatement deleteStatement = connection
-									.prepareStatement("DELETE FROM visitor_log WHERE id = ?")){
-						deleteStatement.setInt(1, databaseIdOfSelectedVisitor);
-						deleteStatement.execute();
-						
-						JOptionPane.showMessageDialog(thisPanel, "Successfully deleted visitor.", "Success!",
-								JOptionPane.INFORMATION_MESSAGE);
-						updateTable();
-					} catch (SQLException e1) {
-						JOptionPane.showConfirmDialog(thisPanel,
-								"An error occured while fetching visitors from the database. \n\nDetails: " +e1.getMessage());
-					}
-		
-					
-				}
-			}
-			
-		});
-		*/
+
 		jpnlButtonActions.add(jbtnDelete);
 		/* END OF jbtnShowAddForm */
 		
