@@ -21,6 +21,7 @@ public class VisitorTableModel extends AbstractTableModel {
 		String purpose;
 		String timeOfVisit;
 		String timeOfLeave;
+		int id;
 	}
 	
 	private List<VisitorRecord> internalCache;
@@ -75,7 +76,7 @@ public class VisitorTableModel extends AbstractTableModel {
 		switch(columnIndex) {
 		
 		case 0:
-			return rowIndex + 1;
+			return visitorRecord.id;
 			
 		case 1:
 			return visitorRecord.name;
@@ -106,6 +107,7 @@ public class VisitorTableModel extends AbstractTableModel {
 			internalCache.clear();
 			while(visitorsResultSet.next()) {
 				VisitorRecord visitorRecord = new VisitorRecord();
+				visitorRecord.id = visitorsResultSet.getInt("id");
 				visitorRecord.name = visitorsResultSet.getString("name_of_visitor");
 				visitorRecord.type = visitorsResultSet.getString("visitor_type");
 				visitorRecord.purpose = visitorsResultSet.getString("purpose_of_visit");
