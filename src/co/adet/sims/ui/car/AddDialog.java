@@ -8,9 +8,14 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -287,6 +292,7 @@ public class AddDialog extends JDialog {
 		jbtnOk.setFont(new Font("Segoe UI", Font.PLAIN, 12));
 		jbtnOk.setFocusable(false);
 		jbtnOk.addActionListener(event -> {
+			
 			try {
 				Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db", "sims",
 						"admin123");
@@ -323,17 +329,24 @@ public class AddDialog extends JDialog {
 	}
 
 	public void resetForm() {
+		
+		DateTimeFormatter noSeconds = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT)
+				.withLocale(Locale.ENGLISH);
+		
 		jtxtfldOwnerFirstName.setText("");
 		jtxtfldOwnerLastName.setText("");
 		jtxtfldContactNumber.setText("");
 		jtxtfldCarPlateNumber.setText("");
 		jtxtfldCarModelAndColor.setText("");
-		jtxtfldTimeEntered.setText("");
+		jtxtfldTimeEntered.setText(LocalTime.now().withNano(0).format(noSeconds).toString());
 		jtxtfldTimeExited.setText("");
+		
+		jtxtfldTimeEntered.setEditable(false);
+		jtxtfldTimeExited.setEditable(false);
 
 		jcmbParkingSlot.removeAllItems();
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pupsims_db", "pupsims",
-				"pupsimspass_123");
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db", "sims",
+				"admin123");
 				Statement retrieveStatement = connection.createStatement();
 				ResultSet parkingSlotsResultSet = retrieveStatement.executeQuery("SELECT * FROM parking_slot")) {
 

@@ -11,13 +11,16 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -288,19 +291,26 @@ public class AddReportDialog extends JDialog {
 								"Please correct the input errors below:" + errorMessageBuilder.toString());
 						return;
 					}
+						String date1 = jtxtfldDate.getText();
+						String time2 = jtxtfldTime.getText();
+						String nameOfInjured = jtxtfldInjuredPersonName.getText();
+						String age4 = jtxtfldInjuredPersonAge.getText();
+						String medicalNotes5 = jtxtfldInjuredPersonMedicalNotes.getText();
+						String descriptiveDetails6 = jtxtarDescriptiveDetails.getText();
+						
+						try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db", 
+								"sims", "admin123");
+							PreparedStatement insertStatement = connection.prepareStatement(
+									"INSERT INTO incident_report(incident_date, incident_time, injured_name, age, medical_notes, descriptive_details) VALUES(?, ?, ?, ?, ?, ?)")){
 					
-					try {
-						Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pupsims_db",
-								"pupsims", "pupsimspass_123");
-						Statement statement = connection.createStatement();
-
-						statement.execute("INSERT INTO incident_report VALUES (NULL, '" + date + "','"
-								+ time + "','" + injuredPersonName + "','"
-								+ age + "','" + medicalNotes
-								+ "','" + descriptiveDetails + "')");
-
-						statement.close();
-						connection.close();
+							insertStatement.setString(1, date1);
+							insertStatement.setString(2, time2);
+							insertStatement.setString(3, nameOfInjured);
+							insertStatement.setString(4, age4);
+							insertStatement.setString(5, medicalNotes5);
+							insertStatement.setString(6, descriptiveDetails6);
+							insertStatement.execute();
+							connection.close();		
 
 						JOptionPane.showMessageDialog(null, "Report successfully saved!");
 
@@ -328,6 +338,7 @@ public class AddReportDialog extends JDialog {
 	}
 
 	public void resetForm() {
+		
 		jtxtfldTime.setText("");
 		jtxtfldInjuredPersonName.setText("");
 		jtxtfldInjuredPersonAge.setText("");

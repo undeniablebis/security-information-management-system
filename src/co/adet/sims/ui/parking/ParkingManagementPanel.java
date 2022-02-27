@@ -4,10 +4,17 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -25,6 +32,8 @@ import javax.swing.border.EmptyBorder;
  *
  */
 public class ParkingManagementPanel extends JPanel {
+	
+	ParkingManagementPanel thisPanel = this;
 
 	/**
 	 * Default Serial Version UID (for serializability, not important, placed to remove warnings)
@@ -39,6 +48,7 @@ public class ParkingManagementPanel extends JPanel {
 	 * Add Form Dialog of this panel.
 	 */
 	protected AddDialog parkingAddDialog;
+	protected UpdateDialog parkingUpdateDialog;
 	private JTable jtblParking;
 	
 	protected ParkingSlotTableModel parkingSlotTableModel;
@@ -86,6 +96,63 @@ public class ParkingManagementPanel extends JPanel {
 			parkingAddDialog.setVisible(true);
 		});
 		jpnlButtonActions.add(jbtnShowAddForm);
+		
+		JButton jbtnShowUpdateForm = new JButton("Update");
+		jbtnShowUpdateForm.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		jbtnShowUpdateForm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedRowIndexOnTable = jtblParking.getSelectedRow();
+				if(selectedRowIndexOnTable == -1) {
+					JOptionPane.showMessageDialog(thisPanel, 
+							"Please select a parking first before clicking this button.", "Warning!",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				String databaseIdOfSelectedParking = (String) jtblParking.getValueAt(selectedRowIndexOnTable, 0);
+				
+				parkingUpdateDialog.initializeWithSlotNumber(databaseIdOfSelectedParking);
+				parkingUpdateDialog.setVisible(true);
+				
+				
+			}
+		});
+		jpnlButtonActions.add(jbtnShowUpdateForm);
+		
+		JButton jbtnShowDeleteForm = new JButton("Delete");
+		jbtnShowDeleteForm.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		jbtnShowDeleteForm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedRowIndexOnTable = jtblParking.getSelectedRow();
+				if (selectedRowIndexOnTable == -1) {
+					JOptionPane.showMessageDialog(thisPanel, 
+							"Please select a member first before clicking this button.", "Warning!",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				if (JOptionPane.showConfirmDialog(thisPanel, 
+						"Are you sure you want to delete this visitor?") == JOptionPane.YES_OPTION) {
+					
+					String databaseIdOfSelectedParking = (String) jtblParking.getValueAt(selectedRowIndexOnTable, 0);
+					try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db",
+							"sims", "admin123");
+							PreparedStatement deleteStatement = connection
+									.prepareStatement("DELETE FROM parking_slot WHERE slot_number = ?")){
+						deleteStatement.setString(1, databaseIdOfSelectedParking);
+						deleteStatement.execute();
+						
+						JOptionPane.showMessageDialog(thisPanel, "Successfully deleted parking.", "Success!",
+								JOptionPane.INFORMATION_MESSAGE);
+						updateTable();
+					} catch (SQLException e1) {
+						JOptionPane.showMessageDialog(thisPanel, 
+								"An error occured while fetching members from the database. \n\nDetails: " 
+						+ e1.getMessage());
+					}
+							
+				}
+			}
+		});
+		jpnlButtonActions.add(jbtnShowDeleteForm);
 		/* END OF jbtnShowAddForm */
 		
 		/* jscrlpnParkingTable - Scrollable Table Panel */
@@ -116,6 +183,9 @@ public class ParkingManagementPanel extends JPanel {
 		// Create the add form dialog
 		parkingAddDialog = new AddDialog();
 		parkingAddDialog.parkingManagementPanel = this;
+		
+		parkingUpdateDialog = new UpdateDialog();
+		parkingUpdateDialog.parkingManagementPanel = this;
 	}
 	
 	public void updateTable() {
