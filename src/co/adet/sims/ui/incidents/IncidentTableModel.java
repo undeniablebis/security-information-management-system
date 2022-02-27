@@ -20,6 +20,7 @@ public class IncidentTableModel extends AbstractTableModel {
 		String injuredName;
 		short injuredAge;
 		String descriptiveDetails;
+		int id;
 	}
 	
 	private List<IncidentRecord> internalCache;
@@ -31,7 +32,7 @@ public class IncidentTableModel extends AbstractTableModel {
 	
 	@Override
 	public int getColumnCount() {
-		return 4;
+		return 5;
 	}
 	
 	@Override
@@ -39,15 +40,19 @@ public class IncidentTableModel extends AbstractTableModel {
 		switch(columnIndex) {
 		
 		case 0:
-			return "Happened On";
+			
+			return "id";
 			
 		case 1:
-			return "Injured Name";
+			return "Happened On";
 			
 		case 2:
-			return "Age";
+			return "Injured Name";
 			
 		case 3:
+			return "Age";
+			
+		case 4:
 			return "Details";
 			
 		default:
@@ -68,15 +73,18 @@ public class IncidentTableModel extends AbstractTableModel {
 		switch(columnIndex) {
 
 		case 0:
+			return incidentRecord.id;
+					
+		case 1:
 			return incidentRecord.incidentHappenedOn;
 			
-		case 1:
+		case 2:
 			return incidentRecord.injuredName;
 			
-		case 2:
+		case 3:
 			return incidentRecord.injuredAge;
 			
-		case 3:
+		case 4:
 			return incidentRecord.descriptiveDetails;
 			
 		default:
@@ -86,13 +94,14 @@ public class IncidentTableModel extends AbstractTableModel {
 	}
 	
 	public void refresh() {
-		try(Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pupsims_db", "pupsims", "pupsimspass_123");
+		try(Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db", "sims", "admin123");
 			Statement retrieveStatement = connection.createStatement();
 			ResultSet incidentsResultSet = retrieveStatement.executeQuery("SELECT * FROM incident_report")) {
 			
 			internalCache.clear();
 			while(incidentsResultSet.next()) {
 				IncidentRecord incidentRecord = new IncidentRecord();
+				incidentRecord.id = incidentsResultSet.getInt("id");
 				incidentRecord.incidentHappenedOn = incidentsResultSet.getString("incident_date") + " " + incidentsResultSet.getString("incident_time");
 				incidentRecord.injuredName = incidentsResultSet.getString("injured_name");
 				incidentRecord.injuredAge = incidentsResultSet.getShort("age");

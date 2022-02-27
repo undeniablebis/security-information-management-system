@@ -5,10 +5,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -40,6 +43,7 @@ public class CarManagementPanel extends JPanel {
 	 * Add Form Dialog of this panel.
 	 */
 	protected AddDialog carAddDialog;
+	protected UpdateDialog carUpdateDialog;
 	
 	protected CarTableModel carTableModel;
 	
@@ -47,6 +51,9 @@ public class CarManagementPanel extends JPanel {
 	 * Construct the panel.
 	 */
 	public CarManagementPanel() {
+		
+		CarManagementPanel thisPanel = this;
+		
 		// Set background to white
 		setBackground(Color.WHITE);
 		// Set border to EmptyBorder for spacing
@@ -88,6 +95,29 @@ public class CarManagementPanel extends JPanel {
 		jpnlButtonActions.add(jbtnShowAddForm);
 		/* END OF jbtnShowAddForm */
 		
+		/* jbtnShowUpdateForm - button for updating visitors' cars */
+		JButton jbtnShowUpdateForm = new JButton("Update");
+		jbtnShowUpdateForm.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		jbtnShowUpdateForm.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedRowIndexOnTable = jtblCarLog.getSelectedRow();
+				if(selectedRowIndexOnTable == -1) {
+					JOptionPane.showMessageDialog(thisPanel, 
+							"Please select a visitor first before clicking this button.", "Warning!",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				String databaseIdOfSelectedParking = (String) jtblCarLog.getValueAt(selectedRowIndexOnTable, 0);
+				
+				carUpdateDialog.initializeWithSlotNumber(databaseIdOfSelectedParking);
+				carUpdateDialog.setVisible(true);
+				
+				
+			}
+		});
+		jpnlButtonActions.add(jbtnShowUpdateForm);
+		
+		
 		/* jscrlpnCarTable - Scrollable Table Panel */
 		JScrollPane jscrlpnCarTable = new JScrollPane();
 		add(jscrlpnCarTable);
@@ -117,6 +147,9 @@ public class CarManagementPanel extends JPanel {
 		// Create the add form dialog
 		carAddDialog = new AddDialog();
 		carAddDialog.carManagementPanel = this;
+		
+		carUpdateDialog = new UpdateDialog();
+		carUpdateDialog.carManagementPanel = this;
 	}
 	
 	public void updateTable() {

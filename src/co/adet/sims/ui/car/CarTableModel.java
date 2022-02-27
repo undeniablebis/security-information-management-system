@@ -107,8 +107,8 @@ public class CarTableModel extends AbstractTableModel {
 	}
 
 	public void refresh() {
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pupsims_db", "pupsims",
-				"pupsimspass_123");
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db", "sims",
+				"admin123");
 				Statement retrieveStatement = connection.createStatement();
 				ResultSet carsResultSet = retrieveStatement.executeQuery("SELECT * FROM car_log")) {
 

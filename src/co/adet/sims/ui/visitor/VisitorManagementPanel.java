@@ -98,7 +98,9 @@ public class VisitorManagementPanel extends JPanel {
 		});
 		
 		jpnlButtonActions.add(jbtnShowAddForm);
+		/* END OF jbtnShowAddForm */
 		
+		/* jbtnShowUpdateForm - button for updating visitors */
 		JButton jbtnUpdate = new JButton("Update");
 		jbtnUpdate.setBackground(Color.WHITE);
 		jbtnUpdate.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -159,7 +161,7 @@ public class VisitorManagementPanel extends JPanel {
 		});
 
 		jpnlButtonActions.add(jbtnDelete);
-		/* END OF jbtnShowAddForm */
+	
 		
 		/* jscrlpnVisitorTable - Scrollable Table Panel */
 		JScrollPane jscrlpnVisitorTable = new JScrollPane();
