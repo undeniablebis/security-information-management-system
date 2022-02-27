@@ -1,17 +1,28 @@
 package co.adet.sims.ui.inspection;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
+
+import co.adet.sims.ui.inspection.UpdateDialog;
+import co.adet.sims.ui.inspection.InspectionManagementPanel;
 
 /**
  * Building Inspection Management Panel of this Application. Contains a Table
@@ -40,6 +51,8 @@ public class InspectionManagementPanel extends JPanel {
 	 * Add Form Dialog of this panel.
 	 */
 	protected AddDialog inspectionAddDialog;
+	protected UpdateDialog inspectionUpdateDialog;
+
 	
 	/**
 	 * Table Model of the main table.
@@ -50,6 +63,8 @@ public class InspectionManagementPanel extends JPanel {
 	 * Construct the panel.
 	 */
 	public InspectionManagementPanel() {
+		
+		InspectionManagementPanel thisPanel = this;
 		
 		// Set background to white
 		setBackground(Color.WHITE);
@@ -85,12 +100,82 @@ public class InspectionManagementPanel extends JPanel {
 		/* jbtnShowAddForm - button for showing the add form dialog */
 		JButton jbtnShowAddForm = new JButton("Add");
 		jbtnShowAddForm.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		jbtnShowAddForm.setBackground(Color.WHITE);
 		jbtnShowAddForm.addActionListener(event -> {
 			inspectionAddDialog.resetForm();
 			inspectionAddDialog.setVisible(true);
 		});
 		jpnlButtonActions.add(jbtnShowAddForm);
 		/* END OF jbtnShowAddForm */
+		
+		/* START OF jbtnUpdate */
+		
+		JButton jbtnUpdate = new JButton("Update");
+		jbtnUpdate.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		jbtnUpdate.setBackground(Color.WHITE);
+		jbtnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedRowIndexOnTable = jtblInspection.getSelectedRow();
+				if (selectedRowIndexOnTable == -1) {
+					JOptionPane.showMessageDialog(thisPanel,
+							"Please select an account first before clicking this button.", "Warning!",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				int databaseIdOfSelectedMember = (int) jtblInspection.getValueAt(selectedRowIndexOnTable, 0);
+
+				inspectionUpdateDialog.initializeWithAccountId(databaseIdOfSelectedMember);
+
+				inspectionUpdateDialog.setVisible(true);
+			}
+		});
+		
+		jbtnUpdate.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		jpnlButtonActions.add(jbtnUpdate);
+		
+		/* END OF jbtnUpdate */
+		
+		/* START OF jbtnDelete */
+		
+		JButton jbtnDelete = new JButton("Delete");
+		jbtnDelete.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		jbtnDelete.setBackground(Color.WHITE);
+		jbtnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selectedRowIndexOnTable = jtblInspection.getSelectedRow();
+				if (selectedRowIndexOnTable == -1) {
+					JOptionPane.showMessageDialog(thisPanel, 
+							"Please select a member first before clicking this button.", "Warning!",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				if (JOptionPane.showConfirmDialog(thisPanel, 
+						"Are you sure you want to delete this member?") == JOptionPane.YES_OPTION) {
+					
+					int databaseIdOfSelectedMember = (int) jtblInspection.getValueAt(selectedRowIndexOnTable, 0);
+					try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db",
+							"sims", "admin123");
+							PreparedStatement deleteStatement = connection
+									.prepareStatement("DELETE FROM inspection WHERE id = ?")){
+						deleteStatement.setInt(1, databaseIdOfSelectedMember);
+						deleteStatement.execute();
+						
+						JOptionPane.showMessageDialog(thisPanel, "Successfully deleted account.", "Success!",
+								JOptionPane.INFORMATION_MESSAGE);
+						updateTable();
+					} catch (SQLException e1) {
+						JOptionPane.showMessageDialog(thisPanel, 
+								"An error occured while fetching members from the database. \n\nDetails: " 
+						+ e1.getMessage());
+					}
+							
+				}
+			}
+		});
+		jbtnDelete.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		jpnlButtonActions.add(jbtnDelete);
+		
+		/* END OF jbtnDelete */
 		
 		/* jscrlpnInspectionTable - Scrollable Table Panel */
 		JScrollPane jscrlpnInspectionTable = new JScrollPane();
@@ -114,6 +199,10 @@ public class InspectionManagementPanel extends JPanel {
 		// Create the add form dialog
 		inspectionAddDialog = new AddDialog();
 		inspectionAddDialog.inspectionManagementPanel = this;
+		
+		// Create the update form dialog
+		inspectionUpdateDialog = new UpdateDialog();
+		inspectionUpdateDialog.inspectionManagementPanel = this;
 	}
 	
 	/**

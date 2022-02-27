@@ -17,8 +17,8 @@ public class InspectionTableModel extends AbstractTableModel {
 		String date;
 		String buildingFloor;
 		String roomNumbers;
-		int numberOfIssues;
 		String condition;
+		int id;
 	}
 
 	/**
@@ -30,7 +30,7 @@ public class InspectionTableModel extends AbstractTableModel {
 	/**
 	 * Column names for this model.
 	 */
-	private static final String[] columnNames = { "#", "Date", "Building-Floor", "Rooms", "# of Issues", "Condition" };
+	private static final String[] columnNames = { "#", "Date", "Building-Floor", "Rooms", "Condition" };
 
 	/**
 	 * Inspection Management Panel that owns this dialog box.
@@ -46,6 +46,9 @@ public class InspectionTableModel extends AbstractTableModel {
 	 */
 	private List<InspectionRecord> internalCache;
 
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public InspectionTableModel() {
 		super();
 		internalCache = new ArrayList<>();
@@ -110,7 +113,7 @@ public class InspectionTableModel extends AbstractTableModel {
 
 		// First Column - Row Number (1-based for user-friendliness)
 		case 0:
-			return rowIndex + 1;
+			return inspectionRecord.id;
 
 		// Second Column - Date
 		case 1:
@@ -125,11 +128,9 @@ public class InspectionTableModel extends AbstractTableModel {
 			return inspectionRecord.roomNumbers;
 
 		// Fifth Column - Issue Count
-		case 4:
-			return inspectionRecord.numberOfIssues;
 
-		// Sixth Column - General Condition
-		case 5:
+		// Fifth Column - General Condition
+		case 4:
 			return inspectionRecord.condition;
 
 		default:
@@ -148,8 +149,8 @@ public class InspectionTableModel extends AbstractTableModel {
 		new SwingWorker<List<InspectionRecord>, Void>() {
 			@Override
 			protected List<InspectionRecord> doInBackground() throws Exception {
-				try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pupsims_db",
-						"pupsims", "pupsimspass_123");
+				try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db",
+						"sims", "admin123");
 						Statement retrieveStatement = connection.createStatement();
 						ResultSet inspectionsResultSet = retrieveStatement.executeQuery(
 								"SELECT inspection.*, COUNT(inspection_issue.description) FROM inspection LEFT JOIN inspection_issue ON inspection_issue.inspection_id = inspection.id GROUP BY inspection.id")) {
@@ -157,11 +158,11 @@ public class InspectionTableModel extends AbstractTableModel {
 					List<InspectionRecord> inspections = new ArrayList<>();
 					while (inspectionsResultSet.next()) {
 						InspectionRecord inspectionRecord = new InspectionRecord();
+						inspectionRecord.id = inspectionsResultSet.getInt("id");
 						inspectionRecord.date = inspectionsResultSet.getString("date");
 						inspectionRecord.buildingFloor = inspectionsResultSet.getString("building_name") + " Floor: "
 								+ inspectionsResultSet.getString("floor_number");
 						inspectionRecord.roomNumbers = inspectionsResultSet.getString("room_numbers");
-						inspectionRecord.numberOfIssues = inspectionsResultSet.getInt("COUNT(inspection_issue.description)");
 						inspectionRecord.condition = inspectionsResultSet.getString("general_condition");
 						inspections.add(inspectionRecord);
 					}

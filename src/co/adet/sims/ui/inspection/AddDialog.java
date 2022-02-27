@@ -65,7 +65,7 @@ public class AddDialog extends JDialog {
 	private JTextField jtxtfldTimeFinished;
 	private JTextArea jtxtareaDescription;
 	private JTextArea jtxtareaOtherNotes;
-	private List<JTextField> issueTextFieldList;
+
 
 	// Panel container for issue input fields
 	private JPanel jpnlIssueList;
@@ -107,13 +107,10 @@ public class AddDialog extends JDialog {
 			new SwingWorker<Void, Void>() {
 				@Override
 				protected Void doInBackground() throws Exception {
-					try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pupsims_db",
-							"pupsims", "pupsimspass_123");
+					try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db",
+							"sims", "admin123");
 							PreparedStatement insertStatement = connection.prepareStatement(
-									"INSERT INTO inspection VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-							PreparedStatement insertIssuesStatement = connection.prepareStatement("INSERT INTO inspection_issue VALUES (?, ?)")) {
-						
-						connection.setAutoCommit(false);
+									"INSERT INTO inspection VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
 
 						insertStatement.setString(1, (String) jcmbBuildingName.getSelectedItem());
 						insertStatement.setInt(2, Integer.parseInt(jtxtfldFloorNumber.getText()));
@@ -128,21 +125,6 @@ public class AddDialog extends JDialog {
 						
 						insertStatement.execute();
 						
-						int inspectionId = 0;
-						try(ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
-							generatedKeys.next();
-							inspectionId = generatedKeys.getInt(1);
-						}
-						
-						for(JTextField jtxtfldIssue : issueTextFieldList) {
-							insertIssuesStatement.setInt(1, inspectionId);
-							insertIssuesStatement.setString(2, jtxtfldIssue.getText());
-							insertIssuesStatement.addBatch();
-						}
-						
-						insertIssuesStatement.executeBatch();
-						
-						connection.commit();
 					} catch (DateTimeParseException e) {
 						// If an error occured while parsing the datetime fields,
 						// output a friendly message
@@ -244,6 +226,7 @@ public class AddDialog extends JDialog {
 
 		/* jcmbInspector - combo box input for inspector (security guard) */
 		jcmbInspector = new JComboBox<String>();
+		jcmbInspector.setModel(new DefaultComboBoxModel<>(new String[] { "0001", "0002", "0003" }));
 		jcmbInspector.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		GridBagConstraints gbc_jcmbInspector = new GridBagConstraints();
 		gbc_jcmbInspector.insets = new Insets(0, 0, 5, 0);
@@ -437,88 +420,7 @@ public class AddDialog extends JDialog {
 		jscrlpnDescription.setViewportView(jtxtareaDescription);
 		/* END OF jtxtareaDescription */
 
-		/* jlblIssues - label for issues input */
-		JLabel jlblIssues = new JLabel("Issues:");
-		jlblIssues.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		GridBagConstraints gbc_jlblIssues = new GridBagConstraints();
-		gbc_jlblIssues.anchor = GridBagConstraints.NORTHWEST;
-		gbc_jlblIssues.insets = new Insets(0, 0, 5, 5);
-		gbc_jlblIssues.gridx = 2;
-		gbc_jlblIssues.gridy = 6;
-		jpnlForm.add(jlblIssues, gbc_jlblIssues);
-		/* END OF jlblIssues */
-
-		/* jbtnAddIssue - button for adding issues */
-		JButton jbtnAddIssue = new JButton("Add Issue");
-
-		// jbtnAddIssue Click Listener
-		jbtnAddIssue.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Create a JLabel - JTextField pair for this issue input
-
-				/* jlblIssue - the label for this pair */
-				JLabel jlblIssue = new JLabel("Issue #" + (issueTextFieldList.size() + 1));
-				jlblIssue.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-				GridBagConstraints gbc_jlblIssue = new GridBagConstraints();
-				gbc_jlblIssue.anchor = GridBagConstraints.NORTHWEST;
-				gbc_jlblIssue.gridx = 0;
-				gbc_jlblIssue.gridy = issueTextFieldList.size();
-				jpnlIssueList.add(jlblIssue, gbc_jlblIssue);
-				/* END OF jlblIssue */
-
-				/* jtxtIssue - the input field for this pair */
-				JTextField jtxtIssue = new JTextField();
-				jtxtIssue.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-				GridBagConstraints gbc_jtxtIssue = new GridBagConstraints();
-				gbc_jtxtIssue.anchor = GridBagConstraints.NORTHWEST;
-				gbc_jtxtIssue.fill = GridBagConstraints.HORIZONTAL;
-				gbc_jtxtIssue.gridx = 1;
-				gbc_jtxtIssue.gridy = issueTextFieldList.size();
-				jpnlIssueList.add(jtxtIssue, gbc_jtxtIssue);
-				/* END OF jtxtIssue */
-
-				// Add jtxtIssue to the list of JTextFields for issues.
-				// This is to reference them later
-				issueTextFieldList.add(jtxtIssue);
-
-				// Revalidate the dialog component hierarchy
-				revalidate();
-			}
-		});
-
-		jbtnAddIssue.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		GridBagConstraints gbc_jbtnAddIssue = new GridBagConstraints();
-		gbc_jbtnAddIssue.anchor = GridBagConstraints.EAST;
-		gbc_jbtnAddIssue.insets = new Insets(0, 0, 5, 0);
-		gbc_jbtnAddIssue.gridx = 3;
-		gbc_jbtnAddIssue.gridy = 6;
-		jpnlForm.add(jbtnAddIssue, gbc_jbtnAddIssue);
-		/* END OF jbtnAddIssue */
-
-		/* jscrlpnIssueList - scrollable container for a dynamic issue list form */
-		JScrollPane jscrlpnIssueList = new JScrollPane();
-		GridBagConstraints gbc_jscrlpnIssueList = new GridBagConstraints();
-		gbc_jscrlpnIssueList.gridheight = 2;
-		gbc_jscrlpnIssueList.gridwidth = 2;
-		gbc_jscrlpnIssueList.fill = GridBagConstraints.BOTH;
-		gbc_jscrlpnIssueList.gridx = 2;
-		gbc_jscrlpnIssueList.gridy = 7;
-		jpnlForm.add(jscrlpnIssueList, gbc_jscrlpnIssueList);
-		/* END OF jscrlpnIssueList */
-
-		/* jpnlIssueList - main container panel for issue list form */
-		jpnlIssueList = new JPanel();
-		jpnlIssueList.setBorder(new EmptyBorder(5, 5, 5, 5));
-		jscrlpnIssueList.setViewportView(jpnlIssueList);
-		GridBagLayout gbl_jpnlIssueList = new GridBagLayout();
-		gbl_jpnlIssueList.columnWidths = new int[] { 0 };
-		gbl_jpnlIssueList.rowHeights = new int[] { 0 };
-		gbl_jpnlIssueList.columnWeights = new double[] { 0.30, 0.70 };
-		gbl_jpnlIssueList.rowWeights = new double[] { Double.MIN_VALUE };
-		jpnlIssueList.setLayout(gbl_jpnlIssueList);
-		/* END OF jpnlIssueList */
-
+		
 		/* jlblOtherNotes - label for other notes input */
 		JLabel jlblOtherNotes = new JLabel("<html>Other<br>Notes:</html>");
 		jlblOtherNotes.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -547,8 +449,7 @@ public class AddDialog extends JDialog {
 		jscrlpnOtherNotes.setViewportView(jtxtareaOtherNotes);
 		/* END OF jtxtareaOtherNotes */
 
-		/* issueTextFieldList - text field inputs for issues */
-		issueTextFieldList = new ArrayList<>();
+
 	}
 
 	/**
@@ -559,27 +460,12 @@ public class AddDialog extends JDialog {
 		jtxtfldFloorNumber.setText("");
 		jtxtfldRoomNumbers.setText("");
 		jcmbGeneralCondition.setSelectedIndex(0);
-		jcmbInspector.removeAllItems();
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pupsims_db", "pupsims",
-				"pupsimspass_123");
-				Statement retrieveStatement = connection.createStatement();
-				ResultSet securityGuardsResultSet = retrieveStatement.executeQuery("SELECT * FROM security_guard")) {
-
-			while (securityGuardsResultSet.next())
-				jcmbInspector.addItem(securityGuardsResultSet.getInt("employee_id") + " "
-						+ securityGuardsResultSet.getString("first_name") + " "
-						+ securityGuardsResultSet.getString("last_name"));
-		} catch (SQLException e) {
-			JOptionPane.showMessageDialog(null,
-					"An error occured while trying to load security guards into combobox.\n\nMessage: " + e);
-		}
+		jcmbInspector.setSelectedIndex(0);
 		jtxtfldDate.setText("");
 		jtxtfldTimeStarted.setText("");
 		jtxtfldTimeFinished.setText("");
 		jtxtareaDescription.setText("");
 		jtxtareaOtherNotes.setText("");
-		issueTextFieldList.clear();
-		jpnlIssueList.removeAll();
 		revalidate();
 	}
 
