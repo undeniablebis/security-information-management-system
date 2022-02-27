@@ -301,8 +301,8 @@ public class AddSuppliesDialog extends JDialog {
 					}
 					
 					try {
-						Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pupsims_db",
-								"pupsims", "pupsimspass_123");
+						Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db",
+								"sims", "admin123");
 						Statement statement = connection.createStatement();
 
 						/* Condition set for item type button group */

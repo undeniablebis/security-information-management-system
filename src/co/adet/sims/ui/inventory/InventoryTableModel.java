@@ -11,6 +11,8 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
+import co.adet.sims.ui.inspection.InspectionManagementPanel;
+
 public class InventoryTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 1L;
@@ -30,6 +32,8 @@ public class InventoryTableModel extends AbstractTableModel {
 		super();
 		internalCache = new ArrayList<>();
 	}
+	
+	protected InventoryManagementPanel inventoryManagementPanel;
 
 	@Override
 	public int getColumnCount() {
@@ -100,8 +104,8 @@ public class InventoryTableModel extends AbstractTableModel {
 	}
 
 	public void refresh() {
-		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pupsims_db", "pupsims",
-				"pupsimspass_123");
+		try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db", "sims",
+				"admin123");
 				Statement retrieveStatement = connection.createStatement();
 				ResultSet inventoryResultSet = retrieveStatement.executeQuery("SELECT * FROM inventory_of_supplies")) {
 
