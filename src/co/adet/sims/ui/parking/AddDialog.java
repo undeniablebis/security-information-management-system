@@ -8,8 +8,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
+
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -142,6 +143,7 @@ public class AddDialog extends JDialog {
 		jtxtDescription = new JTextArea();
 		scrollPane.setViewportView(jtxtDescription);
 		jtxtDescription.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		/* END OF jtxtDescription */
 		JLabel jlblStatus = new JLabel("Status:");
 		jlblStatus.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		GridBagConstraints gbc_jlblStatus = new GridBagConstraints();
@@ -150,7 +152,7 @@ public class AddDialog extends JDialog {
 		gbc_jlblStatus.gridx = 0;
 		gbc_jlblStatus.gridy = 3;
 		jpnlContentPane.add(jlblStatus, gbc_jlblStatus);
-		/* END OF jtxtDescription */
+
 
 		/* jcmbStatus Status selection */
 		jcmbStatus = new JComboBox<>();
@@ -180,18 +182,23 @@ public class AddDialog extends JDialog {
 		JButton jbtnOk = new JButton("Ok");
 		jbtnOk.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		jbtnOk.addActionListener(event -> {
-			try {
-				Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/pupsims_db", "pupsims",
-						"pupsimspass_123");
-				Statement statement = connection.createStatement();
-
-				statement.execute("INSERT INTO parking_slot VALUES('" + jtxtfldSlotNumber.getText() + "', '"
-						+ jtxtfldLocation.getText() + "'," + "'" + jtxtDescription.getText() + "', '" + jcmbStatus.getItemAt(jcmbStatus.getSelectedIndex())
-						+ "')");
-
-				statement.close();
+			
+			String slotNumber = jtxtfldSlotNumber.getText();
+			String location = jtxtfldLocation.getText();
+			String description = jtxtDescription.getText();
+			
+			try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/sims_db", 
+					"sims", "admin123");
+				PreparedStatement insertStatement = connection.prepareStatement(
+						"INSERT INTO parking_slot(slot_number, location, description, status) VALUES(?, ?, ?, ?)")){
+				
+				insertStatement.setString(1, slotNumber);
+				insertStatement.setString(2, location);
+				insertStatement.setString(3, description);
+				insertStatement.setString(4,(String) jcmbStatus.getSelectedItem());
+				insertStatement.execute();
 				connection.close();
-
+	
 				JOptionPane.showMessageDialog(thisDialog, "Parking slot added successfully!");
 
 				// Close the dialog after saving
